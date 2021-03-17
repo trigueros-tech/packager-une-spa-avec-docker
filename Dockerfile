@@ -11,6 +11,7 @@ RUN yarn install --frozen-lockfile && yarn run build
 FROM node:14.16.0-alpine3.13
 
 EXPOSE 4000
+ENV APP_MESSAGE="Message de l'image docker"
 
 # Une bonne pratique des images docker consiste à lancer les images avec des utilisateurs aux droits limités
 USER node
@@ -18,7 +19,7 @@ WORKDIR /home/node/app
 COPY server /home/node/app
 RUN npm ci
 
-COPY --from=build /app/build /home/node/app/static_files
+COPY --from=build --chown=node:node /app/build /home/node/app/static_files
 RUN ls -la /home/node/app/static_files
 
 ENTRYPOINT ["node", "index.js"]
